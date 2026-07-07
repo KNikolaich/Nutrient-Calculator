@@ -219,7 +219,7 @@ export default function Home() {
         type="button"
         onClick={() => setIsMobileSidebarOpen(true)}
         aria-label="Открыть сводку за день"
-        className="lg:hidden fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-xl flex items-center justify-center text-2xl font-bold hover:bg-primary/90 active:scale-95 transition-transform"
+        className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-xl flex items-center justify-center text-2xl font-bold hover:bg-primary/90 active:scale-95 transition-transform"
       >
         Σ
       </button>
