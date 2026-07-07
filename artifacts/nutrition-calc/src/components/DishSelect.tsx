@@ -120,7 +120,7 @@ export function DishSelect({ dishes, selectedDishId, onSelect, id }: DishSelectP
   return (
     <div
       ref={containerRef}
-      className="relative flex-1"
+      className="relative flex-1 min-w-0"
       data-testid={`dish-select-${id}`}
     >
       {/* Trigger button */}
@@ -144,16 +144,16 @@ export function DishSelect({ dishes, selectedDishId, onSelect, id }: DishSelectP
             : "border-border bg-background text-muted-foreground hover:border-primary/30"
         )}
       >
-        <span className="truncate leading-tight">
+        <span className="flex items-center gap-2 min-w-0 overflow-hidden">
           {selectedDish ? (
-            <span className="flex items-center gap-2">
-              <span className="truncate">{selectedDish.name}</span>
-              <span className="shrink-0 text-xs font-mono font-semibold">
+            <>
+              <span className="truncate leading-tight">{selectedDish.name}</span>
+              <span className="shrink-0 text-xs font-mono font-semibold text-muted-foreground">
                 {selectedCalories} ккал
               </span>
-            </span>
+            </>
           ) : (
-            "— не выбрано —"
+            <span className="text-muted-foreground">— не выбрано —</span>
           )}
         </span>
         <svg
