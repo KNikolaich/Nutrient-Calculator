@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Калькулятор питания"
+version = "1.0.0"
+id = "artifacts/nutrition-calc"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21573
+
+[services.development]
+run = "pnpm --filter @workspace/nutrition-calc run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/nutrition-calc", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/nutrition-calc/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21573"
+BASE_PATH = "/"
