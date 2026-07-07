@@ -35,19 +35,6 @@ export function MealCard({
   isRestaurant,
   onRestaurantToggle,
 }: MealCardProps) {
-  const selectedDish = dishes.find((d) => d.id === selectedDishId) ?? null;
-
-  const displayedDish = selectedDish
-    ? {
-        protein: Math.round(selectedDish.protein * multiplier * 10) / 10,
-        fat:     Math.round(selectedDish.fat     * multiplier * 10) / 10,
-        carbs:   Math.round(selectedDish.carbs   * multiplier * 10) / 10,
-        calories: Math.round(
-          (selectedDish.protein * 4 + selectedDish.fat * 9 + selectedDish.carbs * 4) * multiplier
-        ),
-      }
-    : null;
-
   return (
     // No overflow-hidden so the custom dropdown can overflow the card boundary
     <Card className="mb-6 shadow-sm" data-testid={`card-meal-${id}`}>
@@ -112,30 +99,6 @@ export function MealCard({
           </div>
         </div>
 
-        {/* Selected dish summary with applied multiplier */}
-        {selectedDish && displayedDish && (
-          <div className="rounded-lg bg-primary/5 border border-primary/20 px-4 py-3 flex items-center justify-between gap-4">
-            <div className="text-sm text-primary/80 font-medium leading-tight flex-1 min-w-0 truncate" title={selectedDish.name}>
-              {selectedDish.name}
-              {multiplier !== 1 && (
-                <span className="ml-2 text-xs font-mono bg-primary/15 text-primary px-1.5 py-0.5 rounded">×{multiplier}</span>
-              )}
-            </div>
-            <div className="flex items-center gap-3 text-xs font-mono shrink-0">
-              <span className="font-bold text-primary text-base">{displayedDish.calories} ккал</span>
-              <span className="text-muted-foreground/50">•</span>
-              <span className="text-blue-600 dark:text-blue-400">
-                Б <span className="font-semibold">{displayedDish.protein}</span>
-              </span>
-              <span className="text-amber-600 dark:text-amber-400">
-                Ж <span className="font-semibold">{displayedDish.fat}</span>
-              </span>
-              <span className="text-emerald-600 dark:text-emerald-400">
-                У <span className="font-semibold">{displayedDish.carbs}</span>
-              </span>
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
