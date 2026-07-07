@@ -10,6 +10,7 @@ export interface SelectedMeal {
   mealId: string;
   mealName: string;
   dish: Dish;
+  multiplier: number;
 }
 
 interface SidebarProps {
@@ -19,29 +20,38 @@ interface SidebarProps {
 
 export function Sidebar({ goals, selectedMeals }: SidebarProps) {
   const totals = selectedMeals.reduce(
-    (acc, { dish }) => {
-      const calories = Math.round(dish.protein * 4 + dish.fat * 9 + dish.carbs * 4);
+    (acc, { dish, multiplier }) => {
+      const m = Number.isFinite(multiplier) && multiplier > 0 ? multiplier : 1;
+      const calories = Math.round((dish.protein * 4 + dish.fat * 9 + dish.carbs * 4) * m);
       acc.calories += calories;
-      acc.protein += dish.protein;
-      acc.fat += dish.fat;
-      acc.carbs += dish.carbs;
+      acc.protein += dish.protein * m;
+      acc.fat += dish.fat * m;
+      acc.carbs += dish.carbs * m;
       return acc;
     },
     { calories: 0, protein: 0, fat: 0, carbs: 0 }
   );
 
+  // Round totals for display
+  const roundedTotals = {
+    calories: Math.round(totals.calories),
+    protein: Math.round(totals.protein * 10) / 10,
+    fat: Math.round(totals.fat * 10) / 10,
+    carbs: Math.round(totals.carbs * 10) / 10,
+  };
+
   const renderProgress = (current: number, target: number | null, unit: string = "") => {
     if (target === null || target === undefined) return <span className="text-muted-foreground font-mono">{current}{unit} / -</span>;
-    
+
     const ratio = current / target;
     let colorClass = "text-muted-foreground"; // below
-    
+
     if (ratio > 1.05) {
       colorClass = "text-destructive"; // over
     } else if (ratio >= 0.95 && ratio <= 1.05) {
       colorClass = "text-green-600 dark:text-green-500"; // within 5%
     }
-    
+
     return (
       <span className="font-mono flex items-baseline gap-1">
         <span className={cn("font-bold text-lg leading-none", colorClass)}>{current}</span>
@@ -59,11 +69,11 @@ export function Sidebar({ goals, selectedMeals }: SidebarProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-5 pt-0 space-y-5">
-          
+
           <div className="space-y-3 min-h-[100px]">
             <AnimatePresence mode="popLayout">
               {selectedMeals.length === 0 ? (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -72,10 +82,15 @@ export function Sidebar({ goals, selectedMeals }: SidebarProps) {
                   Блюда пока не выбраны
                 </motion.div>
               ) : (
-                selectedMeals.map(({ mealId, mealName, dish }) => {
-                  const calories = Math.round(dish.protein * 4 + dish.fat * 9 + dish.carbs * 4);
+                selectedMeals.map(({ mealId, mealName, dish, multiplier }) => {
+                  const m = multiplier ?? 1;
+                  const calories = Math.round((dish.protein * 4 + dish.fat * 9 + dish.carbs * 4) * m);
+                  const protein = Math.round(dish.protein * m * 10) / 10;
+                  const fat = Math.round(dish.fat * m * 10) / 10;
+                  const carbs = Math.round(dish.carbs * m * 10) / 10;
+
                   return (
-                    <motion.div 
+                    <motion.div
                       key={mealId}
                       layout
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -87,15 +102,22 @@ export function Sidebar({ goals, selectedMeals }: SidebarProps) {
                     >
                       <div className="flex justify-between items-start gap-2">
                         <span className="font-semibold text-foreground/80">{mealName}</span>
-                        <span className="font-mono font-bold text-primary">{calories}</span>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {m !== 1 && (
+                            <span className="text-xs font-mono bg-primary/10 text-primary px-1.5 py-0.5 rounded">
+                              ×{m}
+                            </span>
+                          )}
+                          <span className="font-mono font-bold text-primary">{calories}</span>
+                        </div>
                       </div>
                       <div className="text-muted-foreground leading-snug line-clamp-2" title={dish.name}>
                         {dish.name}
                       </div>
                       <div className="flex gap-3 text-xs font-mono pt-1 text-muted-foreground/80">
-                        <span>Б: {dish.protein}</span>
-                        <span>Ж: {dish.fat}</span>
-                        <span>У: {dish.carbs}</span>
+                        <span>Б: <span className="text-foreground">{protein}</span></span>
+                        <span>Ж: <span className="text-foreground">{fat}</span></span>
+                        <span>У: <span className="text-foreground">{carbs}</span></span>
                       </div>
                     </motion.div>
                   );
@@ -108,26 +130,26 @@ export function Sidebar({ goals, selectedMeals }: SidebarProps) {
 
           <div className="space-y-4">
             <h3 className="font-bold text-lg uppercase tracking-wider text-foreground">Итого</h3>
-            
+
             <div className="grid gap-3">
               <div className="flex justify-between items-end">
                 <span className="text-sm font-medium text-muted-foreground">Калории</span>
-                {renderProgress(totals.calories, goals?.calories || null, " ккал")}
+                {renderProgress(roundedTotals.calories, goals?.calories || null, " ккал")}
               </div>
-              
+
               <div className="flex justify-between items-end">
                 <span className="text-sm font-medium text-muted-foreground">Белки</span>
-                {renderProgress(totals.protein, goals?.protein || null, "г")}
+                {renderProgress(roundedTotals.protein, goals?.protein || null, "г")}
               </div>
-              
+
               <div className="flex justify-between items-end">
                 <span className="text-sm font-medium text-muted-foreground">Жиры</span>
-                {renderProgress(totals.fat, goals?.fat || null, "г")}
+                {renderProgress(roundedTotals.fat, goals?.fat || null, "г")}
               </div>
-              
+
               <div className="flex justify-between items-end">
                 <span className="text-sm font-medium text-muted-foreground">Углеводы</span>
-                {renderProgress(totals.carbs, goals?.carbs || null, "г")}
+                {renderProgress(roundedTotals.carbs, goals?.carbs || null, "г")}
               </div>
             </div>
           </div>

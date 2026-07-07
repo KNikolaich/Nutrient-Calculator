@@ -6,6 +6,13 @@ import { MealCard } from "@/components/MealCard";
 import { Sidebar, SelectedMeal } from "@/components/Sidebar";
 
 const GOALS_COOKIE = "nutrition_goals";
+const ALLOWED_MULTIPLIERS = [0.5, 1, 1.25, 1.5, 1.75, 2, 2.5, 3] as const;
+type AllowedMultiplier = typeof ALLOWED_MULTIPLIERS[number];
+
+function normalizeMultiplier(value: number): AllowedMultiplier {
+  if (!Number.isFinite(value)) return 1;
+  return (ALLOWED_MULTIPLIERS.includes(value as AllowedMultiplier) ? value : 1) as AllowedMultiplier;
+}
 
 interface Selections {
   breakfast: string | null;
@@ -18,6 +25,14 @@ interface Selections {
 interface RestaurantState {
   lunch: boolean;
   dinner: boolean;
+}
+
+interface Multipliers {
+  breakfast: number;
+  lunch: number;
+  dinner: number;
+  snack: number;
+  treats: number;
 }
 
 export default function Home() {
@@ -35,6 +50,14 @@ export default function Home() {
   const [restaurant, setRestaurant] = useState<RestaurantState>({
     lunch: false,
     dinner: false,
+  });
+
+  const [multipliers, setMultipliers] = useState<Multipliers>({
+    breakfast: 1,
+    lunch: 1,
+    dinner: 1,
+    snack: 1,
+    treats: 1,
   });
 
   useEffect(() => {
@@ -67,15 +90,20 @@ export default function Home() {
     setSelections(prev => ({ ...prev, [mealId]: dishId }));
   };
 
+  const handleMultiplierChange = (mealId: keyof Multipliers, value: number) => {
+    setMultipliers(prev => ({ ...prev, [mealId]: normalizeMultiplier(value) }));
+  };
+
   const handleRestaurantToggle = (mealId: keyof RestaurantState, checked: boolean) => {
     setRestaurant(prev => ({ ...prev, [mealId]: checked }));
-    // Clear selection if switching modes
+    // Clear selection and reset multiplier when switching modes
     setSelections(prev => ({ ...prev, [mealId]: null }));
+    setMultipliers(prev => ({ ...prev, [mealId]: 1 }));
   };
 
   // Build the list of selected meals for the sidebar
   const selectedMealsList: SelectedMeal[] = [];
-  
+
   const mealSections = [
     { id: 'breakfast', name: 'Завтрак', source: FOODS.breakfast },
     { id: 'lunch', name: 'Обед', source: restaurant.lunch ? FOODS.lunch_restaurant : FOODS.lunch },
@@ -92,13 +120,14 @@ export default function Home() {
         selectedMealsList.push({
           mealId: section.id,
           mealName: section.name,
-          dish
+          dish,
+          multiplier: multipliers[section.id],
         });
       }
     }
   });
 
-  if (!isGoalsLoaded) return null; // Or a brief loading spinner
+  if (!isGoalsLoaded) return null;
 
   return (
     <div className="min-h-[100dvh] bg-background text-foreground pb-20">
@@ -116,55 +145,65 @@ export default function Home() {
             <GoalsForm initialGoals={goals} onSave={handleSaveGoals} />
 
             <div className="space-y-6">
-              <MealCard 
+              <MealCard
                 id="breakfast"
                 title="Завтрак"
                 icon="🍳"
                 dishes={FOODS.breakfast}
                 selectedDishId={selections.breakfast}
                 onSelect={(dishId) => handleSelect("breakfast", dishId)}
+                multiplier={multipliers.breakfast}
+                onMultiplierChange={(m) => handleMultiplierChange("breakfast", m)}
               />
 
-              <MealCard 
+              <MealCard
                 id="lunch"
                 title="Обед"
                 icon="🍲"
                 dishes={restaurant.lunch ? FOODS.lunch_restaurant : FOODS.lunch}
                 selectedDishId={selections.lunch}
                 onSelect={(dishId) => handleSelect("lunch", dishId)}
+                multiplier={multipliers.lunch}
+                onMultiplierChange={(m) => handleMultiplierChange("lunch", m)}
                 hasRestaurantToggle={true}
                 isRestaurant={restaurant.lunch}
                 onRestaurantToggle={(checked) => handleRestaurantToggle("lunch", checked)}
               />
 
-              <MealCard 
+              <MealCard
                 id="dinner"
                 title="Ужин"
                 icon="🥩"
                 dishes={restaurant.dinner ? FOODS.dinner_restaurant : FOODS.dinner}
                 selectedDishId={selections.dinner}
                 onSelect={(dishId) => handleSelect("dinner", dishId)}
+                multiplier={multipliers.dinner}
+                onMultiplierChange={(m) => handleMultiplierChange("dinner", m)}
                 hasRestaurantToggle={true}
                 isRestaurant={restaurant.dinner}
                 onRestaurantToggle={(checked) => handleRestaurantToggle("dinner", checked)}
               />
 
-              <MealCard 
+              <MealCard
                 id="snack"
                 title="Перекус"
                 icon="🍎"
                 dishes={FOODS.snack}
                 selectedDishId={selections.snack}
                 onSelect={(dishId) => handleSelect("snack", dishId)}
+                multiplier={multipliers.snack}
+                onMultiplierChange={(m) => handleMultiplierChange("snack", m)}
               />
 
-              <MealCard 
+              <MealCard
                 id="treats"
                 title="Вреднятина"
                 icon="🍩"
                 dishes={FOODS.treats}
                 selectedDishId={selections.treats}
                 onSelect={(dishId) => handleSelect("treats", dishId)}
+                multiplier={multipliers.treats}
+                onMultiplierChange={(m) => handleMultiplierChange("treats", m)}
               />
             </div>
           </div>
