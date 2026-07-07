@@ -75,7 +75,7 @@ export function GoalsForm({ initialGoals, onSave }: GoalsFormProps) {
           className="h-8 text-muted-foreground hover:text-foreground"
           data-testid="button-edit-goals"
         >
-          <Pencil className="w-4 h-4 mr-1.5" /> Изменить
+          <Pencil className="w-4 h-4" />
         </Button>
       </div>
     );

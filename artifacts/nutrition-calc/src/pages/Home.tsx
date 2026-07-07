@@ -9,11 +9,13 @@ import { Sidebar, SelectedMeal } from "@/components/Sidebar";
 
 const GOALS_COOKIE = "nutrition_goals";
 const ALLOWED_MULTIPLIERS = [0.5, 1, 1.25, 1.5, 1.75, 2, 2.5, 3] as const;
-type AllowedMultiplier = typeof ALLOWED_MULTIPLIERS[number];
+type AllowedMultiplier = (typeof ALLOWED_MULTIPLIERS)[number];
 
 function normalizeMultiplier(value: number): AllowedMultiplier {
   if (!Number.isFinite(value)) return 1;
-  return (ALLOWED_MULTIPLIERS.includes(value as AllowedMultiplier) ? value : 1) as AllowedMultiplier;
+  return (
+    ALLOWED_MULTIPLIERS.includes(value as AllowedMultiplier) ? value : 1
+  ) as AllowedMultiplier;
 }
 
 interface Selections {
@@ -70,10 +72,14 @@ export default function Home() {
         const parsed = JSON.parse(saved);
         if (
           parsed &&
-          typeof parsed.calories === "number" && isFinite(parsed.calories) &&
-          typeof parsed.protein === "number" && isFinite(parsed.protein) &&
-          typeof parsed.fat === "number" && isFinite(parsed.fat) &&
-          typeof parsed.carbs === "number" && isFinite(parsed.carbs)
+          typeof parsed.calories === "number" &&
+          isFinite(parsed.calories) &&
+          typeof parsed.protein === "number" &&
+          isFinite(parsed.protein) &&
+          typeof parsed.fat === "number" &&
+          isFinite(parsed.fat) &&
+          typeof parsed.carbs === "number" &&
+          isFinite(parsed.carbs)
         ) {
           setGoals(parsed);
         }
@@ -87,7 +93,9 @@ export default function Home() {
   // Close mobile drawer on Escape
   useEffect(() => {
     if (!isMobileSidebarOpen) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setIsMobileSidebarOpen(false); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMobileSidebarOpen(false);
+    };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [isMobileSidebarOpen]);
@@ -95,7 +103,9 @@ export default function Home() {
   // Prevent body scroll when drawer is open
   useEffect(() => {
     document.body.style.overflow = isMobileSidebarOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isMobileSidebarOpen]);
 
   const handleSaveGoals = (newGoals: NutritionGoals) => {
@@ -104,32 +114,46 @@ export default function Home() {
   };
 
   const handleSelect = (mealId: keyof Selections, dishId: string | null) => {
-    setSelections(prev => ({ ...prev, [mealId]: dishId }));
+    setSelections((prev) => ({ ...prev, [mealId]: dishId }));
   };
 
   const handleMultiplierChange = (mealId: keyof Multipliers, value: number) => {
-    setMultipliers(prev => ({ ...prev, [mealId]: normalizeMultiplier(value) }));
+    setMultipliers((prev) => ({
+      ...prev,
+      [mealId]: normalizeMultiplier(value),
+    }));
   };
 
-  const handleRestaurantToggle = (mealId: keyof RestaurantState, checked: boolean) => {
-    setRestaurant(prev => ({ ...prev, [mealId]: checked }));
-    setSelections(prev => ({ ...prev, [mealId]: null }));
-    setMultipliers(prev => ({ ...prev, [mealId]: 1 }));
+  const handleRestaurantToggle = (
+    mealId: keyof RestaurantState,
+    checked: boolean,
+  ) => {
+    setRestaurant((prev) => ({ ...prev, [mealId]: checked }));
+    setSelections((prev) => ({ ...prev, [mealId]: null }));
+    setMultipliers((prev) => ({ ...prev, [mealId]: 1 }));
   };
 
   const mealSections = [
     { id: "breakfast", name: "Завтрак", source: FOODS.breakfast },
-    { id: "lunch", name: "Обед", source: restaurant.lunch ? FOODS.lunch_restaurant : FOODS.lunch },
-    { id: "dinner", name: "Ужин", source: restaurant.dinner ? FOODS.dinner_restaurant : FOODS.dinner },
+    {
+      id: "lunch",
+      name: "Обед",
+      source: restaurant.lunch ? FOODS.lunch_restaurant : FOODS.lunch,
+    },
+    {
+      id: "dinner",
+      name: "Ужин",
+      source: restaurant.dinner ? FOODS.dinner_restaurant : FOODS.dinner,
+    },
     { id: "snack", name: "Перекус", source: FOODS.snack },
     { id: "treats", name: "Вреднятина", source: FOODS.treats },
   ] as const;
 
   const selectedMealsList: SelectedMeal[] = [];
-  mealSections.forEach(section => {
+  mealSections.forEach((section) => {
     const selectedId = selections[section.id];
     if (selectedId) {
-      const dish = section.source.find(d => d.id === selectedId);
+      const dish = section.source.find((d) => d.id === selectedId);
       if (dish) {
         selectedMealsList.push({
           mealId: section.id,
@@ -147,49 +171,66 @@ export default function Home() {
     <div className="min-h-[100dvh] bg-background text-foreground pb-20">
       <header className="bg-card border-b border-border py-4 px-6 sticky top-0 z-10 shadow-sm">
         <div className="max-w-5xl mx-auto flex items-center justify-center md:justify-start gap-3">
-          <span className="text-2xl" aria-hidden="true">🥑</span>
-          <h1 className="text-xl font-bold text-primary tracking-tight">Daily Nutrition</h1>
+          <span className="text-2xl" aria-hidden="true">
+            🥑
+          </span>
+          <h1 className="text-xl font-bold text-primary tracking-tight">
+            Конструктор питания
+          </h1>
         </div>
       </header>
 
       <main className="max-w-5xl mx-auto p-4 md:p-6 lg:p-8">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
-
           {/* Left column: meal cards */}
           <div className="flex-1 w-full">
             <GoalsForm initialGoals={goals} onSave={handleSaveGoals} />
 
             <div className="space-y-6">
               <MealCard
-                id="breakfast" title="Завтрак" icon="🍳"
+                id="breakfast"
+                title="Завтрак"
+                icon="🍳"
                 dishes={FOODS.breakfast}
                 selectedDishId={selections.breakfast}
                 onSelect={(d) => handleSelect("breakfast", d)}
                 multiplier={multipliers.breakfast}
-                onMultiplierChange={(m) => handleMultiplierChange("breakfast", m)}
+                onMultiplierChange={(m) =>
+                  handleMultiplierChange("breakfast", m)
+                }
               />
               <MealCard
-                id="lunch" title="Обед" icon="🍲"
+                id="lunch"
+                title="Обед"
+                icon="🍲"
                 dishes={restaurant.lunch ? FOODS.lunch_restaurant : FOODS.lunch}
                 selectedDishId={selections.lunch}
                 onSelect={(d) => handleSelect("lunch", d)}
                 multiplier={multipliers.lunch}
                 onMultiplierChange={(m) => handleMultiplierChange("lunch", m)}
-                hasRestaurantToggle isRestaurant={restaurant.lunch}
+                hasRestaurantToggle
+                isRestaurant={restaurant.lunch}
                 onRestaurantToggle={(c) => handleRestaurantToggle("lunch", c)}
               />
               <MealCard
-                id="dinner" title="Ужин" icon="🥩"
-                dishes={restaurant.dinner ? FOODS.dinner_restaurant : FOODS.dinner}
+                id="dinner"
+                title="Ужин"
+                icon="🥩"
+                dishes={
+                  restaurant.dinner ? FOODS.dinner_restaurant : FOODS.dinner
+                }
                 selectedDishId={selections.dinner}
                 onSelect={(d) => handleSelect("dinner", d)}
                 multiplier={multipliers.dinner}
                 onMultiplierChange={(m) => handleMultiplierChange("dinner", m)}
-                hasRestaurantToggle isRestaurant={restaurant.dinner}
+                hasRestaurantToggle
+                isRestaurant={restaurant.dinner}
                 onRestaurantToggle={(c) => handleRestaurantToggle("dinner", c)}
               />
               <MealCard
-                id="snack" title="Перекус" icon="🍎"
+                id="snack"
+                title="Перекус"
+                icon="🍎"
                 dishes={FOODS.snack}
                 selectedDishId={selections.snack}
                 onSelect={(d) => handleSelect("snack", d)}
@@ -197,7 +238,9 @@ export default function Home() {
                 onMultiplierChange={(m) => handleMultiplierChange("snack", m)}
               />
               <MealCard
-                id="treats" title="Вреднятина" icon="🍩"
+                id="treats"
+                title="Вреднятина"
+                icon="🍩"
                 dishes={FOODS.treats}
                 selectedDishId={selections.treats}
                 onSelect={(d) => handleSelect("treats", d)}
@@ -251,7 +294,9 @@ export default function Home() {
               {/* Drag handle + close */}
               <div className="flex items-center justify-between px-5 pt-4 pb-2 border-b bg-background">
                 <div className="w-10 h-1 rounded-full bg-muted-foreground/30 mx-auto absolute left-1/2 -translate-x-1/2 top-2" />
-                <span className="text-base font-bold text-foreground">Сводка за день</span>
+                <span className="text-base font-bold text-foreground">
+                  Сводка за день
+                </span>
                 <button
                   type="button"
                   onClick={() => setIsMobileSidebarOpen(false)}
@@ -264,7 +309,11 @@ export default function Home() {
 
               {/* Scrollable content */}
               <div className="overflow-y-auto flex-1">
-                <Sidebar goals={goals} selectedMeals={selectedMealsList} compact />
+                <Sidebar
+                  goals={goals}
+                  selectedMeals={selectedMealsList}
+                  compact
+                />
               </div>
             </motion.div>
           </>
