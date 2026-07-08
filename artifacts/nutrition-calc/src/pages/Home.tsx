@@ -6,6 +6,8 @@ import { FOODS } from "@/data/foods";
 import { GoalsForm, NutritionGoals } from "@/components/GoalsForm";
 import { MealCard } from "@/components/MealCard";
 import { Sidebar, SelectedMeal } from "@/components/Sidebar";
+import { ReferenceDialog } from "@/components/ReferenceDialog";
+import { AboutDialog } from "@/components/AboutDialog";
 
 const GOALS_COOKIE = "nutrition_goals";
 
@@ -185,13 +187,17 @@ export default function Home() {
   return (
     <div className="min-h-[100dvh] bg-background text-foreground pb-20">
       <header className="bg-card border-b border-border py-4 px-6 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-5xl mx-auto flex items-center justify-center md:justify-start gap-3">
+        <div className="max-w-5xl mx-auto flex items-center gap-3">
           <span className="text-2xl" aria-hidden="true">
             🥑
           </span>
-          <h1 className="text-xl font-bold text-primary tracking-tight">
+          <h1 className="text-xl font-bold text-primary tracking-tight flex-1 text-center md:text-left md:flex-none">
             Конструктор питания
           </h1>
+          <div className="flex items-center gap-1 ml-auto">
+            <ReferenceDialog />
+            <AboutDialog />
+          </div>
         </div>
       </header>
 
