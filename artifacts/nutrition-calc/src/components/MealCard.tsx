@@ -38,32 +38,32 @@ export function MealCard({
 }: MealCardProps) {
   return (
     // No overflow-hidden so the custom dropdown can overflow the card boundary
-    <Card className="mb-6 shadow-sm" data-testid={`card-meal-${id}`}>
-      <CardHeader className="p-4 pb-3 border-b bg-muted/30 flex flex-row items-center justify-between space-y-0 rounded-t-xl">
-        <div className="flex items-center gap-2">
-          <span className="text-xl" aria-hidden="true">{icon}</span>
-          <CardTitle className="text-lg font-semibold">{title}</CardTitle>
+    <Card className="mb-0 shadow-sm" data-testid={`card-meal-${id}`}>
+      <CardHeader className="p-2.5 pb-2 md:p-4 md:pb-3 border-b bg-muted/30 flex flex-row items-center justify-between space-y-0 rounded-t-xl">
+        <div className="flex items-center gap-1.5 md:gap-2">
+          <span className="text-lg md:text-xl" aria-hidden="true">{icon}</span>
+          <CardTitle className="text-base md:text-lg font-semibold">{title}</CardTitle>
           <MealInfo mealId={id} mealName={title} text={infoText} />
         </div>
 
         {hasRestaurantToggle && (
-          <div className="flex items-center space-x-2 bg-background px-3 py-1.5 rounded-md border border-border shadow-sm">
+          <div className="flex items-center space-x-1.5 md:space-x-2 bg-background px-2 py-1 md:px-3 md:py-1.5 rounded-md border border-border shadow-sm">
             <Checkbox
               id={`rest-${id}`}
               checked={isRestaurant}
               onCheckedChange={(c) => onRestaurantToggle?.(!!c)}
               data-testid={`checkbox-restaurant-${id}`}
             />
-            <Label htmlFor={`rest-${id}`} className="text-sm font-medium cursor-pointer">
+            <Label htmlFor={`rest-${id}`} className="text-xs md:text-sm font-medium cursor-pointer">
               🍽 В ресторане
             </Label>
           </div>
         )}
       </CardHeader>
 
-      <CardContent className="p-4 space-y-3">
+      <CardContent className="p-2.5 md:p-4 space-y-2 md:space-y-3">
         {/* Selectors row */}
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-2 md:gap-3 items-center">
           {/* Custom dish dropdown with macro table */}
           <DishSelect
             id={id}

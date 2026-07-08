@@ -54,10 +54,10 @@ export function GoalsForm({ initialGoals, onSave }: GoalsFormProps) {
   if (!isEditing && initialGoals) {
     return (
       <div 
-        className="flex items-center justify-between p-3 rounded-lg border border-border bg-card shadow-sm mb-6"
+        className="flex items-center justify-between p-2 md:p-3 rounded-lg border border-border bg-card shadow-sm mb-2.5 md:mb-6"
         data-testid="goals-summary"
       >
-        <div className="flex items-center gap-2 text-sm text-card-foreground font-medium">
+        <div className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm text-card-foreground font-medium flex-wrap">
           <Settings2 className="w-4 h-4 text-muted-foreground" />
           <span>Мой план:</span>
           <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-md font-semibold">{initialGoals.calories} кал</span>
@@ -82,55 +82,55 @@ export function GoalsForm({ initialGoals, onSave }: GoalsFormProps) {
   }
 
   return (
-    <Card className="mb-6 shadow-sm border-primary/20" data-testid="goals-form-card">
-      <CardContent className="p-5">
-        <div className="flex items-center gap-2 mb-4">
+    <Card className="mb-2.5 md:mb-6 shadow-sm border-primary/20" data-testid="goals-form-card">
+      <CardContent className="p-3 md:p-5">
+        <div className="flex items-center gap-2 mb-2.5 md:mb-4">
           <Settings2 className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-semibold text-card-foreground">Настройка КБЖУ</h2>
+          <h2 className="text-base md:text-lg font-semibold text-card-foreground">Настройка КБЖУ</h2>
         </div>
         
         <form onSubmit={handleSave}>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
-            <div className="space-y-1.5">
-              <Label htmlFor="calories" className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Калории</Label>
+          <div className="grid grid-cols-4 gap-1.5 md:gap-4 mb-2.5 md:mb-5">
+            <div className="space-y-1 md:space-y-1.5 min-w-0">
+              <Label htmlFor="calories" className="text-muted-foreground text-[9px] md:text-xs font-medium uppercase tracking-wider truncate block">Калории</Label>
               <Input 
                 id="calories" 
                 type="number" 
                 value={calories} 
                 onChange={(e) => setCalories(e.target.value)} 
                 required 
-                className="font-mono text-base"
+                className="font-mono text-sm md:text-base h-8 md:h-9 px-1.5 md:px-3"
                 data-testid="input-calories"
               />
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="protein" className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Белки (г)</Label>
+            <div className="space-y-1 md:space-y-1.5 min-w-0">
+              <Label htmlFor="protein" className="text-muted-foreground text-[9px] md:text-xs font-medium uppercase tracking-wider truncate block">Белки, г</Label>
               <Input 
                 id="protein" 
                 type="number" 
                 value={protein} 
                 onChange={(e) => setProtein(e.target.value)} 
                 required 
-                className="font-mono text-base"
+                className="font-mono text-sm md:text-base h-8 md:h-9 px-1.5 md:px-3"
                 data-testid="input-protein"
               />
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="fat" className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Жиры (г)</Label>
+            <div className="space-y-1 md:space-y-1.5 min-w-0">
+              <Label htmlFor="fat" className="text-muted-foreground text-[9px] md:text-xs font-medium uppercase tracking-wider truncate block">Жиры, г</Label>
               <Input 
                 id="fat" 
                 type="number" 
                 value={fat} 
                 onChange={(e) => setFat(e.target.value)} 
                 required 
-                className="font-mono text-base"
+                className="font-mono text-sm md:text-base h-8 md:h-9 px-1.5 md:px-3"
                 data-testid="input-fat"
               />
             </div>
-            <div className="space-y-1.5">
-              <div className="flex justify-between items-center">
-                <Label htmlFor="carbs" className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Углеводы (г)</Label>
-                {autoCarbs && <span className="text-[10px] text-primary bg-primary/10 px-1 rounded font-medium">авто</span>}
+            <div className="space-y-1 md:space-y-1.5 min-w-0">
+              <div className="flex justify-between items-center gap-1">
+                <Label htmlFor="carbs" className="text-muted-foreground text-[9px] md:text-xs font-medium uppercase tracking-wider truncate">Углев., г</Label>
+                {autoCarbs && <span className="text-[8px] md:text-[10px] text-primary bg-primary/10 px-1 rounded font-medium shrink-0">авто</span>}
               </div>
               <Input 
                 id="carbs" 
@@ -141,7 +141,7 @@ export function GoalsForm({ initialGoals, onSave }: GoalsFormProps) {
                   setAutoCarbs(false);
                 }} 
                 required 
-                className="font-mono text-base"
+                className="font-mono text-sm md:text-base h-8 md:h-9 px-1.5 md:px-3"
                 data-testid="input-carbs"
               />
             </div>
@@ -149,7 +149,7 @@ export function GoalsForm({ initialGoals, onSave }: GoalsFormProps) {
           
           <Button 
             type="submit" 
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto h-8 md:h-10 text-sm"
             data-testid="button-save-goals"
           >
             <CheckCircle2 className="w-4 h-4 mr-2" />

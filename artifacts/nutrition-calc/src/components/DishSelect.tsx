@@ -134,7 +134,7 @@ export function DishSelect({ dishes, selectedDishId, onSelect, id }: DishSelectP
         onClick={() => (isOpen ? close() : open())}
         onKeyDown={handleTriggerKeyDown}
         className={cn(
-          "w-full flex items-center justify-between gap-2 rounded-lg border px-3 py-2.5",
+          "w-full flex items-center justify-between gap-2 rounded-lg border px-2.5 py-2 md:px-3 md:py-2.5",
           "text-sm font-medium text-left shadow-sm transition-colors",
           "focus:outline-none focus:ring-2 focus:ring-primary/50",
           isOpen
