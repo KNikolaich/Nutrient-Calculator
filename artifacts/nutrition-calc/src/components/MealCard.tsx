@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { DishSelect } from "./DishSelect";
+import { MealInfo } from "./MealInfo";
 
 const MULTIPLIERS = [0.5, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 
@@ -12,6 +13,7 @@ interface MealCardProps {
   id: string;
   title: string;
   icon: string;
+  infoText: string;
   dishes: Dish[];
   selectedDishId: string | null;
   onSelect: (dishId: string | null) => void;
@@ -26,6 +28,7 @@ export function MealCard({
   id,
   title,
   icon,
+  infoText,
   dishes,
   selectedDishId,
   onSelect,
@@ -42,6 +45,7 @@ export function MealCard({
         <div className="flex items-center gap-2">
           <span className="text-xl" aria-hidden="true">{icon}</span>
           <CardTitle className="text-lg font-semibold">{title}</CardTitle>
+          <MealInfo mealId={id} mealName={title} text={infoText} />
         </div>
 
         {hasRestaurantToggle && (

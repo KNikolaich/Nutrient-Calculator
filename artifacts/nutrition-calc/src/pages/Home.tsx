@@ -8,6 +8,19 @@ import { MealCard } from "@/components/MealCard";
 import { Sidebar, SelectedMeal } from "@/components/Sidebar";
 
 const GOALS_COOKIE = "nutrition_goals";
+
+const MEAL_INFO: Record<"breakfast" | "lunch" | "dinner" | "snack" | "treats", string> = {
+  breakfast:
+    "Завтрак строится по принципу – БЕЛКИ+ЖИРЫ, и можно совсем немного углеводов. Я учел тот факт, чтобы в завтраке было 30-50 г белка",
+  lunch:
+    "Обед, это углеводы + белок и немного клетчатки",
+  dinner:
+    "Здесь мы обычно уже подгоняем под наше БЖУ и финалим день. Вы смотрите, если у вас остался вариант только белка, то делаем ужин лишь белковым, если остались еще и углеводы, прекрасно, делаем как и в обед и закрываем красиво день с углеводами. Но для примера я накину 20 вариантов, где в основе на ужин будет белок, а вы уже смотрите, если не хватает вам еще углеводов, то добавляем углеводы. Не стесняйтесь корректировать, пока не сойдетесь ровно-ровно по нашей калорийности. Вижу частую ошибку, как при заданной калорийности 1900 ккал и 130 г белка (пример), мне скидывают отчет 1900 ккал и 160 г белка или 110 г белка, но так не должно быть. В таком случае если вы при планировании перебрали по белку, но калории сошлись, тогда просто убираем часть белка, калорийность уменьшится, а в остаток, чтобы выровнять калорийность и сохранить белок, добавляем углеводы или жиры.",
+  snack:
+    "Я всегда стараюсь сделать их максимально вкусными и особенно перекус в поздний ужин. Я делаю более сложные варианты с готовкой, например это могут быть вафли протеиновые, панкейки с греческим йогуртом на сахарозаменителе. Но все же давайте накидаю варианты каких-нибудь простых вариантов",
+  treats:
+    "И в завершении добавлю 20% вкусного. Как я и говорю и учу вас, что не нужно ограничивать свой рацион и старайтесь каждый раз по возможности добавить любимые продукты. Я приведу примеры «Запрещенки» но более полезной для нашей формы. В период глубокой сушки, когда процент жира у меня доходит до 5-7% я не использую быстрые углеводы, хотя могу, потому что мне хочеться в данный период больше еды, простой еды по типу овсянки, риса и хлеба. И если я впишу свои 20%, то я останусь голодным. То есть в зависимости от этапа сушки тоже вписывайте любимые приемы пищи и кайфуйте. Обратите внимание, что я подобрал варианты где больше углеводов, но не жиров. На это тоже делайте акцент при выборе вредного.",
+};
 const ALLOWED_MULTIPLIERS = [0.5, 1, 1.25, 1.5, 1.75, 2, 2.5, 3] as const;
 type AllowedMultiplier = (typeof ALLOWED_MULTIPLIERS)[number];
 
@@ -191,6 +204,7 @@ export default function Home() {
                 id="breakfast"
                 title="Завтрак"
                 icon="🍳"
+                infoText={MEAL_INFO.breakfast}
                 dishes={FOODS.breakfast}
                 selectedDishId={selections.breakfast}
                 onSelect={(d) => handleSelect("breakfast", d)}
@@ -203,6 +217,7 @@ export default function Home() {
                 id="lunch"
                 title="Обед"
                 icon="🍲"
+                infoText={MEAL_INFO.lunch}
                 dishes={restaurant.lunch ? FOODS.lunch_restaurant : FOODS.lunch}
                 selectedDishId={selections.lunch}
                 onSelect={(d) => handleSelect("lunch", d)}
@@ -216,6 +231,7 @@ export default function Home() {
                 id="dinner"
                 title="Ужин"
                 icon="🥩"
+                infoText={MEAL_INFO.dinner}
                 dishes={
                   restaurant.dinner ? FOODS.dinner_restaurant : FOODS.dinner
                 }
@@ -231,6 +247,7 @@ export default function Home() {
                 id="snack"
                 title="Перекус"
                 icon="🍎"
+                infoText={MEAL_INFO.snack}
                 dishes={FOODS.snack}
                 selectedDishId={selections.snack}
                 onSelect={(d) => handleSelect("snack", d)}
@@ -241,6 +258,7 @@ export default function Home() {
                 id="treats"
                 title="Вреднятина"
                 icon="🍩"
+                infoText={MEAL_INFO.treats}
                 dishes={FOODS.treats}
                 selectedDishId={selections.treats}
                 onSelect={(d) => handleSelect("treats", d)}
