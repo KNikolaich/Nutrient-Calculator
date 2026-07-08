@@ -3,11 +3,9 @@ import { Dish } from "@/data/foods";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 import { DishSelect } from "./DishSelect";
 import { MealInfo } from "./MealInfo";
-
-const MULTIPLIERS = [0.5, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
+import { MultiplierSelect } from "./MultiplierSelect";
 
 interface MealCardProps {
   id: string;
@@ -74,33 +72,13 @@ export function MealCard({
             onSelect={onSelect}
           />
 
-          {/* Multiplier select */}
-          <div className="relative shrink-0">
-            <select
-              value={String(multiplier)}
-              onChange={(e) => onMultiplierChange(Number(e.target.value))}
-              disabled={!selectedDishId}
-              data-testid={`select-multiplier-${id}`}
-              className={cn(
-                "appearance-none rounded-lg border border-border bg-background pl-3 pr-7 py-2.5",
-                "text-sm font-mono font-semibold shadow-sm",
-                "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary",
-                "transition-colors cursor-pointer",
-                selectedDishId
-                  ? "text-foreground border-border hover:border-primary/40"
-                  : "text-muted-foreground/40 cursor-not-allowed opacity-50"
-              )}
-            >
-              {MULTIPLIERS.map((m) => (
-                <option key={m} value={String(m)}>×{m}</option>
-              ))}
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-1.5 flex items-center">
-              <svg className="w-3.5 h-3.5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
-          </div>
+          {/* Multiplier select — compact text trigger, dropdown on click */}
+          <MultiplierSelect
+            id={id}
+            value={multiplier}
+            onChange={onMultiplierChange}
+            disabled={!selectedDishId}
+          />
         </div>
 
       </CardContent>
