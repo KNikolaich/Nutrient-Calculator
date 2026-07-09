@@ -60,6 +60,9 @@ export default function Home() {
   const [goals, setGoals] = useState<NutritionGoals | null>(null);
   const [isGoalsLoaded, setIsGoalsLoaded] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const summaryTriggerRef = React.useRef<HTMLButtonElement>(null);
+  const summaryCloseRef = React.useRef<HTMLButtonElement>(null);
+  const summaryDrawerRef = React.useRef<HTMLDivElement>(null);
 
   const [selections, setSelections] = useState<Selections>({
     breakfast: null,
@@ -107,14 +110,46 @@ export default function Home() {
     setIsGoalsLoaded(true);
   }, []);
 
-  // Close mobile drawer on Escape
+  // Close mobile drawer on Escape; trap focus while it's open
   useEffect(() => {
     if (!isMobileSidebarOpen) return;
+
+    // Move focus into the drawer once it mounts
+    const focusTimer = window.setTimeout(() => {
+      summaryCloseRef.current?.focus();
+    }, 0);
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsMobileSidebarOpen(false);
+      if (e.key === "Escape") {
+        setIsMobileSidebarOpen(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+
+      const container = summaryDrawerRef.current;
+      if (!container) return;
+      const focusables = container.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.clearTimeout(focusTimer);
+      window.removeEventListener("keydown", onKey);
+      // Return focus to the trigger button when the drawer closes
+      summaryTriggerRef.current?.focus();
+    };
   }, [isMobileSidebarOpen]);
 
   // Prevent body scroll when drawer is open
@@ -219,9 +254,9 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto p-3 md:p-6 lg:p-8">
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-          {/* Left column: meal cards */}
+      <main className="max-w-3xl mx-auto p-3 md:p-6 lg:p-8">
+        <div className="flex flex-col items-start">
+          {/* Meal cards */}
           <div className="flex-1 w-full">
             <GoalsForm
               initialGoals={goals}
@@ -297,25 +332,23 @@ export default function Home() {
               />
             </div>
           </div>
-
-          {/* Right column: sidebar — desktop only */}
-          <div className="hidden lg:block w-[320px] shrink-0">
-            <Sidebar goals={goals} selectedMeals={selectedMealsList} />
-          </div>
         </div>
       </main>
 
-      {/* ── Mobile: floating Σ button ── */}
+      {/* ── Floating Σ button: opens the day summary drawer on any screen size ── */}
       <button
+        ref={summaryTriggerRef}
         type="button"
         onClick={() => setIsMobileSidebarOpen(true)}
         aria-label="Открыть сводку за день"
-        className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-xl flex items-center justify-center text-2xl font-bold hover:bg-primary/90 active:scale-95 transition-transform"
+        aria-haspopup="dialog"
+        aria-expanded={isMobileSidebarOpen}
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-xl flex items-center justify-center text-2xl font-bold hover:bg-primary/90 active:scale-95 transition-transform"
       >
         Σ
       </button>
 
-      {/* ── Mobile: backdrop + bottom drawer ── */}
+      {/* ── Backdrop + bottom drawer with the day summary ── */}
       <AnimatePresence>
         {isMobileSidebarOpen && (
           <>
@@ -326,26 +359,32 @@ export default function Home() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="lg:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
               onClick={() => setIsMobileSidebarOpen(false)}
+              aria-hidden="true"
             />
 
             {/* Drawer */}
             <motion.div
               key="drawer"
+              ref={summaryDrawerRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="daily-summary-title"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="lg:hidden fixed bottom-0 left-0 right-0 z-50 max-h-[85dvh] rounded-t-2xl overflow-hidden shadow-2xl flex flex-col bg-background"
+              className="fixed bottom-0 left-0 right-0 z-50 max-h-[85dvh] sm:max-w-md sm:mx-auto rounded-t-2xl overflow-hidden shadow-2xl flex flex-col bg-background"
             >
               {/* Drag handle + close */}
               <div className="flex items-center justify-between px-5 pt-4 pb-2 border-b bg-background">
                 <div className="w-10 h-1 rounded-full bg-muted-foreground/30 mx-auto absolute left-1/2 -translate-x-1/2 top-2" />
-                <span className="text-base font-bold text-foreground flex items-center gap-1.5">
+                <span id="daily-summary-title" className="text-base font-bold text-foreground flex items-center gap-1.5">
                   📊 Сводка за день
                 </span>
                 <button
+                  ref={summaryCloseRef}
                   type="button"
                   onClick={() => setIsMobileSidebarOpen(false)}
                   aria-label="Закрыть"
