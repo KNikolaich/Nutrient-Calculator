@@ -67,7 +67,6 @@ export function GoalsForm({ initialGoals, onSave, actualTotals }: GoalsFormProps
       >
         <div className="flex flex-col gap-1 text-xs md:text-sm text-card-foreground font-medium">
           <div className="flex items-center gap-1.5 md:gap-2 flex-wrap">
-            <Settings2 className="w-4 h-4 text-muted-foreground" />
             <span>План:</span>
             <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-md font-semibold">{initialGoals.calories} кал</span>
             <span className="text-muted-foreground">•</span>
@@ -79,7 +78,6 @@ export function GoalsForm({ initialGoals, onSave, actualTotals }: GoalsFormProps
           </div>
           {actualTotals && (
             <div className="flex items-center gap-1.5 md:gap-2 flex-wrap" data-testid="goals-actual-totals">
-              <span className="w-4 h-4 shrink-0" aria-hidden="true" />
               <span>Реал:</span>
               <span className="bg-muted text-foreground px-2 py-0.5 rounded-md font-semibold">{actualTotals.calories} кал</span>
               <span className="text-muted-foreground">•</span>
