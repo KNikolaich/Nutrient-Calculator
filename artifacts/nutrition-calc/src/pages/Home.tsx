@@ -375,7 +375,7 @@ export default function Home() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 z-50 max-h-[85dvh] sm:max-w-md sm:mx-auto rounded-t-2xl overflow-hidden shadow-2xl flex flex-col bg-background"
+              className="fixed bottom-0 left-0 right-0 z-50 max-h-[calc(100dvh-1.5rem)] sm:max-w-md sm:mx-auto rounded-t-2xl overflow-hidden shadow-2xl flex flex-col bg-background"
             >
               {/* Drag handle + close */}
               <div className="flex items-center justify-between px-5 pt-4 pb-2 border-b bg-background">
