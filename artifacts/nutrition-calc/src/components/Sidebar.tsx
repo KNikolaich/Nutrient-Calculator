@@ -66,12 +66,14 @@ export function Sidebar({ goals, selectedMeals, compact }: SidebarProps) {
       )}
       data-testid="sidebar-summary"
     >
-      <CardHeader className="p-5 pb-4">
-        <CardTitle className="text-lg font-bold flex items-center gap-2">
-          📊 Сводка за день
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-5 pt-0 space-y-5">
+      {!compact && (
+        <CardHeader className="p-5 pb-4">
+          <CardTitle className="text-lg font-bold flex items-center gap-2">
+            📊 Сводка за день
+          </CardTitle>
+        </CardHeader>
+      )}
+      <CardContent className={cn("p-5 space-y-5", compact ? "pt-4" : "pt-0")}>
 
         <div className="space-y-3 min-h-[80px]">
           <AnimatePresence mode="popLayout">

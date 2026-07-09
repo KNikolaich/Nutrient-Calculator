@@ -320,8 +320,8 @@ export default function Home() {
               {/* Drag handle + close */}
               <div className="flex items-center justify-between px-5 pt-4 pb-2 border-b bg-background">
                 <div className="w-10 h-1 rounded-full bg-muted-foreground/30 mx-auto absolute left-1/2 -translate-x-1/2 top-2" />
-                <span className="text-base font-bold text-foreground">
-                  Сводка за день
+                <span className="text-base font-bold text-foreground flex items-center gap-1.5">
+                  📊 Сводка за день
                 </span>
                 <button
                   type="button"
