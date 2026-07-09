@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Settings2, Pencil, CheckCircle2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface NutritionGoals {
   calories: number;
@@ -60,6 +61,14 @@ export function GoalsForm({ initialGoals, onSave, actualTotals }: GoalsFormProps
   };
 
   if (!isEditing && initialGoals) {
+    const macroColor = (current: number, target: number | null | undefined) => {
+      if (!target) return "";
+      const ratio = current / target;
+      if (ratio > 1.05) return "text-destructive";
+      if (ratio >= 0.95) return "text-green-600 dark:text-green-500";
+      return "";
+    };
+
     return (
       <div 
         className="flex items-center justify-between p-2 md:p-3 rounded-lg border border-border bg-card shadow-sm mb-2.5 md:mb-6"
@@ -71,16 +80,18 @@ export function GoalsForm({ initialGoals, onSave, actualTotals }: GoalsFormProps
         >
           <span className="text-muted-foreground">План:</span>
           <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-md font-semibold justify-self-start tabular-nums">{initialGoals.calories} кал</span>
-          <span className="tabular-nums">{initialGoals.protein}г</span>
-          <span className="tabular-nums">{initialGoals.fat}г</span>
-          <span className="tabular-nums">{initialGoals.carbs}г</span>
+          <span className="tabular-nums justify-self-end">Б {initialGoals.protein}г</span>
+          <span className="tabular-nums justify-self-end">Ж {initialGoals.fat}г</span>
+          <span className="tabular-nums justify-self-end">У {initialGoals.carbs}г</span>
           {actualTotals && (
             <React.Fragment>
               <span className="text-muted-foreground" data-testid="goals-actual-totals">Реал:</span>
-              <span className="bg-muted text-foreground px-2 py-0.5 rounded-md font-semibold justify-self-start tabular-nums">{actualTotals.calories} кал</span>
-              <span className="tabular-nums">Б {actualTotals.protein}г</span>
-              <span className="tabular-nums">Ж {actualTotals.fat}г</span>
-              <span className="tabular-nums">У {actualTotals.carbs}г</span>
+              <span className={cn("bg-muted px-2 py-0.5 rounded-md font-semibold justify-self-start tabular-nums", macroColor(actualTotals.calories, initialGoals.calories) || "text-foreground")}>
+                {actualTotals.calories} кал
+              </span>
+              <span className={cn("tabular-nums justify-self-end", macroColor(actualTotals.protein, initialGoals.protein))}>{actualTotals.protein}г</span>
+              <span className={cn("tabular-nums justify-self-end", macroColor(actualTotals.fat, initialGoals.fat))}>{actualTotals.fat}г</span>
+              <span className={cn("tabular-nums justify-self-end", macroColor(actualTotals.carbs, initialGoals.carbs))}>{actualTotals.carbs}г</span>
             </React.Fragment>
           )}
         </div>
