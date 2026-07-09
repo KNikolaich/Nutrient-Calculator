@@ -182,6 +182,24 @@ export default function Home() {
     }
   });
 
+  const actualTotals = selectedMealsList.reduce(
+    (acc, { dish, multiplier }) => {
+      const m = Number.isFinite(multiplier) && multiplier > 0 ? multiplier : 1;
+      acc.calories += Math.round((dish.protein * 4 + dish.fat * 9 + dish.carbs * 4) * m);
+      acc.protein += dish.protein * m;
+      acc.fat += dish.fat * m;
+      acc.carbs += dish.carbs * m;
+      return acc;
+    },
+    { calories: 0, protein: 0, fat: 0, carbs: 0 }
+  );
+  const roundedActualTotals = {
+    calories: Math.round(actualTotals.calories),
+    protein: Math.round(actualTotals.protein * 10) / 10,
+    fat: Math.round(actualTotals.fat * 10) / 10,
+    carbs: Math.round(actualTotals.carbs * 10) / 10,
+  };
+
   if (!isGoalsLoaded) return null;
 
   return (
@@ -205,7 +223,11 @@ export default function Home() {
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           {/* Left column: meal cards */}
           <div className="flex-1 w-full">
-            <GoalsForm initialGoals={goals} onSave={handleSaveGoals} />
+            <GoalsForm
+              initialGoals={goals}
+              onSave={handleSaveGoals}
+              actualTotals={roundedActualTotals}
+            />
 
             <div className="space-y-2.5 md:space-y-6">
               <MealCard

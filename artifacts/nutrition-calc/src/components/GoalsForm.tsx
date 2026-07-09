@@ -12,12 +12,20 @@ export interface NutritionGoals {
   carbs: number;
 }
 
+interface ActualTotals {
+  calories: number;
+  protein: number;
+  fat: number;
+  carbs: number;
+}
+
 interface GoalsFormProps {
   initialGoals: NutritionGoals | null;
   onSave: (goals: NutritionGoals) => void;
+  actualTotals?: ActualTotals;
 }
 
-export function GoalsForm({ initialGoals, onSave }: GoalsFormProps) {
+export function GoalsForm({ initialGoals, onSave, actualTotals }: GoalsFormProps) {
   const [isEditing, setIsEditing] = useState<boolean>(!initialGoals);
   const [calories, setCalories] = useState<string>(initialGoals?.calories.toString() || "");
   const [protein, setProtein] = useState<string>(initialGoals?.protein.toString() || "");
@@ -57,16 +65,31 @@ export function GoalsForm({ initialGoals, onSave }: GoalsFormProps) {
         className="flex items-center justify-between p-2 md:p-3 rounded-lg border border-border bg-card shadow-sm mb-2.5 md:mb-6"
         data-testid="goals-summary"
       >
-        <div className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm text-card-foreground font-medium flex-wrap">
-          <Settings2 className="w-4 h-4 text-muted-foreground" />
-          <span>Мой план:</span>
-          <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-md font-semibold">{initialGoals.calories} кал</span>
-          <span className="text-muted-foreground">•</span>
-          <span>Бел: {initialGoals.protein}г</span>
-          <span className="text-muted-foreground">•</span>
-          <span>Жиры: {initialGoals.fat}г</span>
-          <span className="text-muted-foreground">•</span>
-          <span>Угл: {initialGoals.carbs}г</span>
+        <div className="flex flex-col gap-1 text-xs md:text-sm text-card-foreground font-medium">
+          <div className="flex items-center gap-1.5 md:gap-2 flex-wrap">
+            <Settings2 className="w-4 h-4 text-muted-foreground" />
+            <span>План:</span>
+            <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-md font-semibold">{initialGoals.calories} кал</span>
+            <span className="text-muted-foreground">•</span>
+            <span>Б: {initialGoals.protein}г</span>
+            <span className="text-muted-foreground">•</span>
+            <span>Ж: {initialGoals.fat}г</span>
+            <span className="text-muted-foreground">•</span>
+            <span>У: {initialGoals.carbs}г</span>
+          </div>
+          {actualTotals && (
+            <div className="flex items-center gap-1.5 md:gap-2 flex-wrap" data-testid="goals-actual-totals">
+              <span className="w-4 h-4 shrink-0" aria-hidden="true" />
+              <span>Реал:</span>
+              <span className="bg-muted text-foreground px-2 py-0.5 rounded-md font-semibold">{actualTotals.calories} кал</span>
+              <span className="text-muted-foreground">•</span>
+              <span>Б: {actualTotals.protein}г</span>
+              <span className="text-muted-foreground">•</span>
+              <span>Ж: {actualTotals.fat}г</span>
+              <span className="text-muted-foreground">•</span>
+              <span>У: {actualTotals.carbs}г</span>
+            </div>
+          )}
         </div>
         <Button 
           variant="ghost" 
