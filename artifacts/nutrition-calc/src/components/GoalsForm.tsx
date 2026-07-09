@@ -65,28 +65,23 @@ export function GoalsForm({ initialGoals, onSave, actualTotals }: GoalsFormProps
         className="flex items-center justify-between p-2 md:p-3 rounded-lg border border-border bg-card shadow-sm mb-2.5 md:mb-6"
         data-testid="goals-summary"
       >
-        <div className="flex flex-col gap-1 text-xs md:text-sm text-card-foreground font-medium">
-          <div className="flex items-center gap-1.5 md:gap-2 flex-wrap">
-            <span>План:</span>
-            <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-md font-semibold">{initialGoals.calories} кал</span>
-            <span className="text-muted-foreground">•</span>
-            <span>Б: {initialGoals.protein}г</span>
-            <span className="text-muted-foreground">•</span>
-            <span>Ж: {initialGoals.fat}г</span>
-            <span className="text-muted-foreground">•</span>
-            <span>У: {initialGoals.carbs}г</span>
-          </div>
+        <div
+          className="grid gap-x-1.5 md:gap-x-3 gap-y-0.5 text-xs md:text-sm text-card-foreground font-medium items-center"
+          style={{ gridTemplateColumns: "auto auto auto auto auto" }}
+        >
+          <span className="text-muted-foreground">План:</span>
+          <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-md font-semibold justify-self-start tabular-nums">{initialGoals.calories} кал</span>
+          <span className="tabular-nums">{initialGoals.protein}г</span>
+          <span className="tabular-nums">{initialGoals.fat}г</span>
+          <span className="tabular-nums">{initialGoals.carbs}г</span>
           {actualTotals && (
-            <div className="flex items-center gap-1.5 md:gap-2 flex-wrap" data-testid="goals-actual-totals">
-              <span>Реал:</span>
-              <span className="bg-muted text-foreground px-2 py-0.5 rounded-md font-semibold">{actualTotals.calories} кал</span>
-              <span className="text-muted-foreground">•</span>
-              <span>Б: {actualTotals.protein}г</span>
-              <span className="text-muted-foreground">•</span>
-              <span>Ж: {actualTotals.fat}г</span>
-              <span className="text-muted-foreground">•</span>
-              <span>У: {actualTotals.carbs}г</span>
-            </div>
+            <React.Fragment>
+              <span className="text-muted-foreground" data-testid="goals-actual-totals">Реал:</span>
+              <span className="bg-muted text-foreground px-2 py-0.5 rounded-md font-semibold justify-self-start tabular-nums">{actualTotals.calories} кал</span>
+              <span className="tabular-nums">Б {actualTotals.protein}г</span>
+              <span className="tabular-nums">Ж {actualTotals.fat}г</span>
+              <span className="tabular-nums">У {actualTotals.carbs}г</span>
+            </React.Fragment>
           )}
         </div>
         <Button 
