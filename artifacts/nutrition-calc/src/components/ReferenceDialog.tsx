@@ -12,6 +12,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { REFERENCE_INTRO, REFERENCE_SECTIONS } from "@/data/nutritionReference";
 import { CAFE_GUIDE_TITLE, CAFE_GUIDE_PARAGRAPHS } from "@/data/cafeGuide";
+import { COUNTING_MISTAKES_TITLE, COUNTING_MISTAKES_PARAGRAPHS } from "@/data/countingMistakes";
 
 // Each tab is a self-contained knowledge-base article. Add new entries here
 // as more content becomes available — the UI renders them automatically.
@@ -28,6 +29,12 @@ const KNOWLEDGE_TABS = [
     label: "Кафе и рестораны",
     intro: CAFE_GUIDE_TITLE,
     paragraphs: CAFE_GUIDE_PARAGRAPHS,
+  },
+  {
+    id: "counting-mistakes",
+    label: "5 ошибок",
+    intro: COUNTING_MISTAKES_TITLE,
+    paragraphs: COUNTING_MISTAKES_PARAGRAPHS,
   },
 ] as const;
 
