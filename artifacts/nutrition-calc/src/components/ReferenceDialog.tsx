@@ -11,15 +11,23 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { REFERENCE_INTRO, REFERENCE_SECTIONS } from "@/data/nutritionReference";
+import { CAFE_GUIDE_TITLE, CAFE_GUIDE_PARAGRAPHS } from "@/data/cafeGuide";
 
 // Each tab is a self-contained knowledge-base article. Add new entries here
 // as more content becomes available — the UI renders them automatically.
+// A tab can render structured `sections` (title + bullet list) and/or free-form `paragraphs`.
 const KNOWLEDGE_TABS = [
   {
     id: "bzhu-sources",
     label: "Источники БЖУ",
     intro: REFERENCE_INTRO,
     sections: REFERENCE_SECTIONS,
+  },
+  {
+    id: "cafe-guide",
+    label: "Кафе и рестораны",
+    intro: CAFE_GUIDE_TITLE,
+    paragraphs: CAFE_GUIDE_PARAGRAPHS,
   },
 ] as const;
 
@@ -96,23 +104,37 @@ export function ReferenceDialog() {
                 {tab.intro}
               </p>
 
-              {tab.sections.map((section) => (
-                <div key={section.title}>
-                  <h3 className="text-sm font-bold text-primary mb-1.5">
-                    {section.title}
-                  </h3>
-                  <ul className="space-y-1">
-                    {section.items.map((item) => (
-                      <li
-                        key={item}
-                        className="text-sm text-foreground/90 leading-snug pl-3.5 relative before:content-['—'] before:absolute before:left-0 before:text-muted-foreground"
-                      >
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+              {"sections" in tab &&
+                tab.sections.map((section) => (
+                  <div key={section.title}>
+                    <h3 className="text-sm font-bold text-primary mb-1.5">
+                      {section.title}
+                    </h3>
+                    <ul className="space-y-1">
+                      {section.items.map((item) => (
+                        <li
+                          key={item}
+                          className="text-sm text-foreground/90 leading-snug pl-3.5 relative before:content-['—'] before:absolute before:left-0 before:text-muted-foreground"
+                        >
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+
+              {"paragraphs" in tab && (
+                <div className="space-y-3">
+                  {tab.paragraphs.map((paragraph, index) => (
+                    <p
+                      key={index}
+                      className="text-sm text-foreground/90 leading-relaxed"
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
                 </div>
-              ))}
+              )}
             </TabsContent>
           ))}
         </Tabs>
