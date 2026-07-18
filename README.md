@@ -260,11 +260,12 @@ pnpm build
 
 ```bash
 cd nutrition-app/artifacts/api-server
-
 pnpm build
+cd ../..
 ```
 
-Готовый файл: `artifacts/api-server/dist/index.mjs`.
+Готовый файл: `artifacts/api-server/dist/index.mjs`.  
+После сборки вернитесь в корень проекта (`cd ../..`) — все дальнейшие команды запускаются оттуда.
 
 ---
 
